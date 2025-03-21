@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const SignupPage = () => {
   const navigate = useNavigate();
+  const { register, loading, error: authError } = useAuth();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -10,7 +12,6 @@ const SignupPage = () => {
     confirmPassword: ''
   });
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -35,37 +36,11 @@ const SignupPage = () => {
       return;
     }
     
-    setLoading(true);
-    
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          username: formData.username,
-          email: formData.email,
-          password: formData.password
-        })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Registration failed');
-      }
-
-      // Save token to localStorage
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-
-      // Redirect to dashboard
+      await register(formData.username, formData.email, formData.password);
       navigate('/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -74,9 +49,9 @@ const SignupPage = () => {
       <div className="bg-white rounded-lg shadow-lg p-8">
         <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">Create Account</h1>
         
-        {error && (
+        {(error || authError) && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
-            {error}
+            {error || authError}
           </div>
         )}
         
