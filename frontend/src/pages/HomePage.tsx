@@ -1,8 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, Users, Award } from 'lucide-react';
+import { courseService } from '../services/courseService';
+import { Course } from '../types/course';
+import CourseCard from '../components/courses/CourseCard';
 
 const HomePage = () => {
+  const [featuredCourses, setFeaturedCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchFeaturedCourses = async () => {
+      setLoading(true);
+      try {
+        const courses = await courseService.getPopularCourses();
+        setFeaturedCourses(courses.slice(0, 3)); // Take first 3 courses
+      } catch (error) {
+        console.error('Error fetching featured courses:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeaturedCourses();
+  }, []);
+
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -58,29 +80,51 @@ const HomePage = () => {
       <section className="bg-gray-50 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center mb-12">Featured Courses</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Sample Course Cards */}
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-white rounded-lg shadow-md overflow-hidden">
-                <img
-                  src={`https://source.unsplash.com/random/800x600?education=${i}`}
-                  alt="Course"
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-2">Sample Course {i}</h3>
-                  <p className="text-gray-600 mb-4">
-                    Learn essential skills with our comprehensive curriculum.
-                  </p>
-                  <Link
-                    to={`/courses/${i}`}
-                    className="text-indigo-600 font-semibold hover:text-indigo-800"
-                  >
-                    Learn More →
-                  </Link>
-                </div>
-              </div>
-            ))}
+          
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {featuredCourses.length > 0 ? (
+                featuredCourses.map((course) => (
+                  <CourseCard key={course.id} course={course} />
+                ))
+              ) : (
+                // Fallback to static courses if API fails
+                [1, 2, 3].map((i) => (
+                  <div key={i} className="bg-white rounded-lg shadow-md overflow-hidden">
+                    <img
+                      src={`https://source.unsplash.com/random/800x600?education=${i}`}
+                      alt="Course"
+                      className="w-full h-48 object-cover"
+                    />
+                    <div className="p-6">
+                      <h3 className="text-xl font-semibold mb-2">Sample Course {i}</h3>
+                      <p className="text-gray-600 mb-4">
+                        Learn essential skills with our comprehensive curriculum.
+                      </p>
+                      <Link
+                        to={`/courses/${i}`}
+                        className="text-indigo-600 font-semibold hover:text-indigo-800"
+                      >
+                        Learn More →
+                      </Link>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+          
+          <div className="text-center mt-12">
+            <Link
+              to="/courses"
+              className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-md"
+            >
+              View All Courses
+            </Link>
           </div>
         </div>
       </section>
