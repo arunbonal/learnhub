@@ -1,19 +1,16 @@
 # LearnHub Project
 
-A learning platform with user authentication.
-
 ## Project Structure
 
 - **Frontend**: React with TypeScript and Tailwind CSS
 - **Backend**: Java with Javalin and MongoDB
 
-## Setup Instructions
-
 ### Prerequisites
 - Node.js and npm
 - Java 11 or higher
 - Maven
-- MongoDB Atlas account
+
+## HOW TO RUN
 
 ### Backend Setup
 
@@ -22,19 +19,14 @@ A learning platform with user authentication.
    cd backend
    ```
 
-2. Update the MongoDB connection string in `db.java` with your Atlas connection details:
-   ```java
-   String connectionString = "mongodb+srv://<username>:<password>@cluster0.mongodb.net/learnhub";
-   ```
-
-3. Build the project with Maven:
+2. Build the project with Maven:
    ```
    mvn clean package
    ```
 
-4. Run the backend server:
+3. Run the backend server (PORT 8081):
    ```
-   java -jar target/learnhub-backend-1.0-SNAPSHOT.jar
+   mvn spring-boot:run
    ```
 
 ### Frontend Setup
@@ -49,7 +41,7 @@ A learning platform with user authentication.
    npm install
    ```
 
-3. Start the development server:
+3. Start the development server (PORT 5173):
    ```
    npm run dev
    ```
