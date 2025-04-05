@@ -12,6 +12,9 @@
 
 ## HOW TO RUN
 
+First, download ZIP or fork the entire repo and open in VS Code
+Parallely, open two terminals (one for backend and one for frontend) and follow the commands below
+
 ### Backend Setup
 
 1. Navigate to the backend directory:
