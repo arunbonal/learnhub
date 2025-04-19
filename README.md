@@ -34,7 +34,7 @@ A learning platform with user authentication.
 
 4. Run the backend server:
    ```
-   java -jar target/learnhub-backend-1.0-SNAPSHOT.jar
+   mvn spring-boot:run
    ```
 
 ### Frontend Setup
